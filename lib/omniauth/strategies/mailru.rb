@@ -50,8 +50,7 @@ module OmniAuth
           'uids' => @access_token['x_mailru_vid']
         }
         request_params.merge!('sig' => calculate_signature(request_params))
-        params = MultiJson.decode(client.request(:get, 'http://www.appsmail.ru/platform/api', request_params))[0]
-        @user_hash ||= params
+        @user_hash ||= MultiJson.decode(client.request(:get, 'http://www.appsmail.ru/platform/api', request_params))[0]
       end
 
       def auth_hash
