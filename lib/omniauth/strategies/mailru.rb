@@ -56,7 +56,6 @@ module OmniAuth
 
       def auth_hash
         data = user_hash
-        puts data
         OmniAuth::Utils.deep_merge(super, {
           'uid' => data['uid'],
           'nickname' => data['nick'],
