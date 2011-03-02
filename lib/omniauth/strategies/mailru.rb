@@ -15,27 +15,13 @@ module OmniAuth
         }
         @private_key = options[:private_key]
         options = {
-          :response_type => 'code'
+          :response_type => 'code',
+          :grant_type => 'authorization_code'
         }
         super(app, :mail_ru, client_id, client_secret, client_options, options, &block)
       end
 
       protected
-
-      def callback_phase
-        if request.params['error'] || request.params['error_reason']
-          raise CallbackError.new(request.params['error'], request.params['error_description'] || request.params['error_reason'], request.params['error_uri'])
-        end
-
-        verifier = request.params['code']
-        @access_token = client.web_server.get_access_token(verifier, :redirect_uri => callback_url, :grant_type => 'authorization_code')
-        @env['omniauth.auth'] = auth_hash
-        call_app!
-      rescue ::OAuth2::HTTPError, ::OAuth2::AccessDenied, CallbackError => e
-        fail!(:invalid_credentials, e)
-      rescue ::MultiJson::DecodeError => e
-        fail!(:invalid_response, e)
-      end
 
       def calculate_signature(params)
         str = params['uids'] + (params.sort.collect { |c| "#{c[0]}=#{c[1]}" }).join('') + @private_key
